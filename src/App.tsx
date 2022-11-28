@@ -1,44 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import "jsoneditor-react/es/editor.min.css";
-import { useState } from "react"
-import reactLogo from "./assets/react.svg"
 import "./App.css"
-import ace from "brace";
-import { JsonEditor as Editor } from "jsoneditor-react";
-
-// import "@contentful/forma-36-react-components/dist/styles.css";
-import "jsoneditor-react/es/editor.min.css";
-import "brace/mode/json";
-import "brace/theme/github";
+import Jeditor from "./components/editor/JEditor";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   const data = [
     {
       name: "Amit",
       "age": 40,
       "sex": "male"
-    },
-    {
-      name: "Poonam",
-      "age": 39,
-      "sex": "female"
-    },
-    {
-      name: "Poonam",
-      "age": 39,
-      "sex": "female"
-    },
-    {
-      name: "Poonam",
-      "age": 39,
-      "sex": "female"
-    },
-    {
-      name: "Poonam",
-      "age": 39,
-      "sex": "female"
     },
     {
       name: "Poonam",
@@ -56,22 +26,30 @@ function App() {
       "sex": "female"
     }
   ];
-  
-  const [json, setJson] = React.useState(data);
-  // const [mode, setMode] = React.useState('code');
+  const [content, setContent] = useState(data);
+  const responseData: any[] = [];
 
-  const modes = ['code', 'tree', 'form', ]
+  const [response, setResponse] = useState(responseData);
+
+  const changeData = (modifiedContent:any) => {
+    setContent(() => modifiedContent);
+  }
+  const printJson = () => {
+    const responseRenderer:any = $('#json-renderer');
+    responseRenderer.jsonViewer(content);
+    setResponse(()=> content);
+  }
   return (
     <div className="App">
-      <Editor
-        mode="code"
-        allowedModes={modes}
-        history
-        value={data}
-        onChange={setJson}
-        ace={ace}
-        search={false}
-      />
+      <Jeditor mode={'code'} onJsonEdit={changeData} content={content} />
+      <br/>
+      <button onClick={printJson}>Print Json</button>
+      <hr/>
+      Response:
+      <hr/>
+      <Jeditor mode={'view'} content={response} />
+      <hr/>
+      <hr/>
     </div>
   );
 }
